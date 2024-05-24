@@ -17,7 +17,7 @@ namespace DataAccess.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.16")
+                .HasAnnotation("ProductVersion", "7.0.19")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -38,10 +38,10 @@ namespace DataAccess.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("ProducerId")
+                    b.Property<int?>("ProducerId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PublisherId")
+                    b.Property<int>("PublisherId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ReleaseDate")
@@ -185,13 +185,15 @@ namespace DataAccess.Migrations
                 {
                     b.HasOne("DataAccess.Entities.Producer", null)
                         .WithMany("Movies")
-                        .HasForeignKey("ProducerId")
+                        .HasForeignKey("ProducerId");
+
+                    b.HasOne("DataAccess.Entities.Publisher", "Publisher")
+                        .WithMany("Movies")
+                        .HasForeignKey("PublisherId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccess.Entities.Publisher", null)
-                        .WithMany("Movies")
-                        .HasForeignKey("PublisherId");
+                    b.Navigation("Publisher");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.User", b =>
@@ -208,7 +210,7 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.Entities.UserMovie", b =>
                 {
                     b.HasOne("DataAccess.Entities.Movie", "Movie")
-                        .WithMany()
+                        .WithMany("UserMovies")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -222,6 +224,11 @@ namespace DataAccess.Migrations
                     b.Navigation("Movie");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("DataAccess.Entities.Movie", b =>
+                {
+                    b.Navigation("UserMovies");
                 });
 
             modelBuilder.Entity("DataAccess.Entities.Producer", b =>

@@ -16,6 +16,9 @@ namespace DataAccess.Entities
 
         public DateTime? ReleaseDate { get; set; }
 
-        public int ProducerId { get; set; }
+        public int PublisherId { get; set; }
+        public Publisher Publisher { get; set; }
+
+        public List<UserMovie> UserMovies { get; set; }
     }
 }
